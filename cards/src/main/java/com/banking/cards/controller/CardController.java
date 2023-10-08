@@ -2,6 +2,7 @@ package com.banking.cards.controller;
 
 import com.banking.cards.constants.CardConstants;
 import com.banking.cards.dto.CardDto;
+import com.banking.cards.dto.CardsContactInfo;
 import com.banking.cards.dto.ErrorResponseDto;
 import com.banking.cards.dto.ResponseDto;
 import com.banking.cards.entity.Card;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +27,20 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "REST APIs for Card Service", description = "REST APIs to perform CRUD operations in the card service")
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
 @Validated
 public class CardController {
 
     private CardService cardService;
+
+    private CardsContactInfo cardsContactInfo;
+
+    public CardController(CardService cardService, CardsContactInfo cardsContactInfo) {
+        this.cardService = cardService;
+        this.cardsContactInfo = cardsContactInfo;
+    }
+
+    @Value("${build.version}")
+    private String buildVersion;
 
     @Operation(description = "REST APIs to create cards in the piggy Bank")
     @ApiResponse(responseCode = "201", description = "HttpsStatus.CREATED")
@@ -108,6 +119,20 @@ public class CardController {
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body(new ResponseDto(CardConstants.STATUS_417, CardConstants.MESSAGE_417_DELETE));
         }
+    }
+
+    @GetMapping(path = "/contact-info")
+    public ResponseEntity<CardsContactInfo> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cardsContactInfo);
+    }
+
+    @GetMapping(path = "/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
     }
 
 }

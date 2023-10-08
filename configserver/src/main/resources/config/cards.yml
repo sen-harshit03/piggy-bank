@@ -1,0 +1,14 @@
+
+build.version: 3.0
+
+cards:
+  message: "Welcome to the contact support of Cards Service - Dev"
+  contactDetails:
+    name: "Rohit Sharma - SDE"
+    email: "rohitsharma@piggybank.com"
+  onCallSupport:
+    - (555) 123-7701
+    - (555) 123-7702
+
+
+

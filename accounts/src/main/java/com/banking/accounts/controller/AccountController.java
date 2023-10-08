@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +25,19 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "CRUD REST APIs for Account Service", description = "CRUD REST APIs in Account Service of Piggy Band to Create, Read, Update and Delete accounts")
 @RestController
 @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
-@AllArgsConstructor
 @Validated
 public class AccountController {
 
     private AccountService accountService;
+    private AccountsContactInfo accountsContactInfo;
+
+    public AccountController(AccountService accountService, AccountsContactInfo accountsContactInfo) {
+        this.accountService = accountService;
+        this.accountsContactInfo = accountsContactInfo;
+    }
+
+    @Value("${build.version}")
+    private String buildVersion;
 
 
     @Operation(summary = "Create REST API for Account Service", description = "REST API to create accounts and customers")
@@ -104,5 +113,19 @@ public class AccountController {
         }
     }
 
+    // TODO: Add the documentation
+    @GetMapping(path = "/contact-info")
+    public ResponseEntity<AccountsContactInfo> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfo);
+    }
+
+    @GetMapping(path = "/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
+    }
 
 }

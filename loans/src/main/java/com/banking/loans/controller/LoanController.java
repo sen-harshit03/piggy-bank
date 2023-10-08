@@ -3,6 +3,7 @@ package com.banking.loans.controller;
 import com.banking.loans.constants.LoanConstants;
 import com.banking.loans.dto.ErrorResponseDto;
 import com.banking.loans.dto.LoanDto;
+import com.banking.loans.dto.LoansContactInfo;
 import com.banking.loans.dto.ResponseDto;
 import com.banking.loans.service.LoanService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +25,20 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Loan Application REST APIs", description = "CRUD REST APIs for Loans Application")
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
 @Validated
 public class LoanController {
 
     private LoanService loanService;
+    private LoansContactInfo loansContactInfo;
+
+    public LoanController(LoanService loanService, LoansContactInfo loansContactInfo) {
+        this.loanService = loanService;
+        this.loansContactInfo = loansContactInfo;
+    }
+
+    @Value("${build.version}")
+    private String buildVersion;
+
 
     @Operation(summary = "REST API to create a loan", description = "REST API to create loan inside Piggy Bank")
     @ApiResponse(responseCode = "201", description = "HttpStatus.CREATED")
@@ -96,7 +107,7 @@ public class LoanController {
                                                       @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must of 10 digits")
                                                       String mobileNumber) {
         boolean isDeleted = loanService.deleteLoan(mobileNumber);
-        if(isDeleted) {
+        if (isDeleted) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDto(LoanConstants.STATUS_200, LoanConstants.MESSAGE_200));
@@ -106,6 +117,22 @@ public class LoanController {
                     .body(new ResponseDto(LoanConstants.STATUS_417, LoanConstants.MESSAGE_417_UPDATE));
         }
     }
+
+
+    @GetMapping(path = "/contact-info")
+    public ResponseEntity<LoansContactInfo> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(loansContactInfo);
+    }
+
+    @GetMapping(path = "/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
+    }
+
 
 
 }
