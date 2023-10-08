@@ -10,6 +10,7 @@
 	</parent>
 	<groupId>com.banking</groupId>
 	<artifactId>loans</artifactId>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>loans</name>
 	<description>Spring Boot project for Loan service</description>
@@ -76,6 +77,17 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.0</version>
+				<configuration>
+					<to>
+						<image>senharshit03/${project.artifactId}:img1</image>
+					</to>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
