@@ -1,6 +1,6 @@
 package com.banking.loans;
 
-import com.banking.loans.dto.LoansContactInfo;
+import com.banking.loans.dto.LoansContactInfoDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-@EnableConfigurationProperties(value = LoansContactInfo.class)
+@EnableConfigurationProperties(value = LoansContactInfoDto.class)
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
 @OpenAPIDefinition(
 		info = @Info(

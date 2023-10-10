@@ -2,10 +2,9 @@ package com.banking.cards.controller;
 
 import com.banking.cards.constants.CardConstants;
 import com.banking.cards.dto.CardDto;
-import com.banking.cards.dto.CardsContactInfo;
+import com.banking.cards.dto.CardsContactInfoDto;
 import com.banking.cards.dto.ErrorResponseDto;
 import com.banking.cards.dto.ResponseDto;
-import com.banking.cards.entity.Card;
 import com.banking.cards.service.CardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,10 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,11 +29,11 @@ public class CardController {
 
     private CardService cardService;
 
-    private CardsContactInfo cardsContactInfo;
+    private CardsContactInfoDto cardsContactInfoDto;
 
-    public CardController(CardService cardService, CardsContactInfo cardsContactInfo) {
+    public CardController(CardService cardService, CardsContactInfoDto cardsContactInfoDto) {
         this.cardService = cardService;
-        this.cardsContactInfo = cardsContactInfo;
+        this.cardsContactInfoDto = cardsContactInfoDto;
     }
 
     @Value("${build.version}")
@@ -122,10 +119,10 @@ public class CardController {
     }
 
     @GetMapping(path = "/contact-info")
-    public ResponseEntity<CardsContactInfo> getContactInfo() {
+    public ResponseEntity<CardsContactInfoDto> getContactInfo() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(cardsContactInfo);
+                .body(cardsContactInfoDto);
     }
 
     @GetMapping(path = "/build-info")

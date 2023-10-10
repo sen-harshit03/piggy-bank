@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,11 +28,11 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private AccountService accountService;
-    private AccountsContactInfo accountsContactInfo;
+    private AccountsContactInfoDto accountsContactInfoDto;
 
-    public AccountController(AccountService accountService, AccountsContactInfo accountsContactInfo) {
+    public AccountController(AccountService accountService, AccountsContactInfoDto accountsContactInfoDto) {
         this.accountService = accountService;
-        this.accountsContactInfo = accountsContactInfo;
+        this.accountsContactInfoDto = accountsContactInfoDto;
     }
 
     @Value("${build.version}")
@@ -115,10 +114,10 @@ public class AccountController {
 
     // TODO: Add the documentation
     @GetMapping(path = "/contact-info")
-    public ResponseEntity<AccountsContactInfo> getContactInfo() {
+    public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(accountsContactInfo);
+                .body(accountsContactInfoDto);
     }
 
     @GetMapping(path = "/build-info")

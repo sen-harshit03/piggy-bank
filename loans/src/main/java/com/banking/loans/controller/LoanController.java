@@ -3,7 +3,7 @@ package com.banking.loans.controller;
 import com.banking.loans.constants.LoanConstants;
 import com.banking.loans.dto.ErrorResponseDto;
 import com.banking.loans.dto.LoanDto;
-import com.banking.loans.dto.LoansContactInfo;
+import com.banking.loans.dto.LoansContactInfoDto;
 import com.banking.loans.dto.ResponseDto;
 import com.banking.loans.service.LoanService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,11 +28,11 @@ import org.springframework.web.bind.annotation.*;
 public class LoanController {
 
     private LoanService loanService;
-    private LoansContactInfo loansContactInfo;
+    private LoansContactInfoDto loansContactInfoDto;
 
-    public LoanController(LoanService loanService, LoansContactInfo loansContactInfo) {
+    public LoanController(LoanService loanService, LoansContactInfoDto loansContactInfoDto) {
         this.loanService = loanService;
-        this.loansContactInfo = loansContactInfo;
+        this.loansContactInfoDto = loansContactInfoDto;
     }
 
     @Value("${build.version}")
@@ -120,10 +119,10 @@ public class LoanController {
 
 
     @GetMapping(path = "/contact-info")
-    public ResponseEntity<LoansContactInfo> getContactInfo() {
+    public ResponseEntity<LoansContactInfoDto> getContactInfo() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(loansContactInfo);
+                .body(loansContactInfoDto);
     }
 
     @GetMapping(path = "/build-info")
