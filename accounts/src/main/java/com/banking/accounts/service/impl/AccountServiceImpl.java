@@ -7,6 +7,7 @@ import com.banking.accounts.entity.Account;
 import com.banking.accounts.entity.Customer;
 import com.banking.accounts.exceptions.CustomerAlreadyExistsException;
 import com.banking.accounts.exceptions.ResourceNotFoundException;
+import com.banking.accounts.mapper.CustomerAccountMapper;
 import com.banking.accounts.mapper.CustomerMapper;
 import com.banking.accounts.repository.AccountRepository;
 import com.banking.accounts.repository.CustomerRepository;
@@ -67,16 +68,7 @@ public class AccountServiceImpl implements AccountService {
                 () -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
         );
 
-
-        return CustomerAccountDto
-                .builder()
-                .name(customer.getName())
-                .email(customer.getEmail())
-                .mobileNumber(customer.getMobileNumber())
-                .accountNumber(account.getAccountNumber())
-                .accountType(account.getAccountType())
-                .branchAddress(account.getBranchAddress())
-                .build();
+        return CustomerAccountMapper.mapToCustomerAccountDto(account, customer);
     }
 
 

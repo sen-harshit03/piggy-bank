@@ -5,14 +5,21 @@ spring:
   application:
     name: "accounts"
   datasource:
-    url: jdbc:mysql://localhost:3307/accountsdb
-    username: root
-    password: root
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
-  sql:
-    init:
-      mode: always
+    hibernate:
+      ddl-auto: update
+#  sql:
+#    init:
+#      mode: always
   profiles:
     active: "prod"
   config:
@@ -23,3 +30,30 @@ management:
     web:
       exposure:
         include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+
+endpoints:
+  shutdown:
+    enabled: true
+
+eureka:
+  instance:
+    preferIdAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: "http://localhost:8070/eureka/"
+
+
+info:
+  app:
+    name: "Accounts"
+    description: "Accounts application for Piggy Bank"
+    version: 1.0.0
