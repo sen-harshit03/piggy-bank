@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated
 public class LoanController {
+
+    private static final Logger log = LoggerFactory.getLogger(LoanController.class);
 
     private LoanService loanService;
     private LoansContactInfoDto loansContactInfoDto;
@@ -42,8 +46,7 @@ public class LoanController {
     @Operation(summary = "REST API to create a loan", description = "REST API to create loan inside Piggy Bank")
     @ApiResponse(responseCode = "201", description = "HttpStatus.CREATED")
     @PostMapping(path = "/create")
-    public ResponseEntity<ResponseDto> createLoan(@RequestParam
-                                                      @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must of 10 digits")
+    public ResponseEntity<ResponseDto> createLoan(@RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must of 10 digits")
                                                       String mobileNumber) {
         loanService.createLoan(mobileNumber);
 
@@ -56,12 +59,13 @@ public class LoanController {
     @Operation(summary = "REST API to get loan details", description = "REST API to get the loan details inside Piggy Bank")
     @ApiResponse(responseCode = "200", description = "HttpStatus.OK")
     @GetMapping(path = "/fetch")
-    public ResponseEntity<LoanDto> fetchLoanDetails(@RequestParam
-                                                        @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must of 10 digits")
+    public ResponseEntity<LoanDto> fetchLoanDetails(
+            @RequestHeader("piggybank-correlation-id") String correlationId,
+            @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must of 10 digits")
                                                         String mobileNumber) {
 
         LoanDto loanDto = loanService.fetchLoanDetails(mobileNumber);
-
+        log.debug("piggy-bank-correlationId : {}", correlationId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(loanDto);

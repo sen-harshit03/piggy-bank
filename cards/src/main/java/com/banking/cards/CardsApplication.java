@@ -10,6 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 @SpringBootApplication
 @EnableConfigurationProperties(value = CardsContactInfoDto.class)
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")

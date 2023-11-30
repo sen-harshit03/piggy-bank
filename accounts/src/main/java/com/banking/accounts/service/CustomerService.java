@@ -10,5 +10,5 @@ public interface CustomerService {
      * @return
      */
 
-    CustomerDetailsDto fetchCustomerDetails(String mobileNumber);
+    CustomerDetailsDto fetchCustomerDetails(String mobileNumber, String correlationId);
 }

@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated
 public class CardController {
+
+    private static final Logger log = LoggerFactory.getLogger(CardController.class);
 
     private CardService cardService;
 
@@ -56,11 +60,13 @@ public class CardController {
     @Operation(description = "REST APIs to fetch card details in the piggy Bank")
     @ApiResponse(responseCode = "200", description = "HttpsStatus.OK")
     @GetMapping(path = "/fetch")
-    public ResponseEntity<CardDto> fetchCardDetails(@RequestParam
-                                                        @Pattern(regexp = "^$|[0-9]{10}", message = "Mobile Number must be of 10 digits")
+    public ResponseEntity<CardDto> fetchCardDetails(
+            @RequestHeader("piggybank-correlation-id") String correlationId,
+            @RequestParam @Pattern(regexp = "^$|[0-9]{10}", message = "Mobile Number must be of 10 digits")
                                                         String mobileNumber) {
 
         CardDto cardDto = cardService.fetchCardDetails(mobileNumber);
+        log.debug("piggybank-correlation-id : {}", correlationId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(cardDto);

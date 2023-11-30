@@ -57,7 +57,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>senharshit03/${project.artifactId}:img5</image>
+						<image>senharshit03/${project.artifactId}:img6</image>
 					</to>
 				</configuration>
 			</plugin>
