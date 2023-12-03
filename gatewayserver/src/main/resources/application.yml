@@ -10,6 +10,9 @@ spring:
         locator:
           enabled: false
           lowerCaseServiceId: true
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 2s
 management:
   endpoints:
     web:
@@ -21,6 +24,12 @@ management:
   info:
     env:
       enabled: true
+  data:
+    redis:
+      connect-timeout: 2s
+      host: localhost
+      port: 6379
+      timeout: 1s
 
 
 
@@ -36,3 +45,11 @@ logging:
     com:
       banking:
         gatewayserver: DEBUG
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10                     # Atleast analyze 10 calls before going to open state
+      permittedNumberOfCallsInHalfOpenState: 2  # No of calls we are permitting in half open state.
+      failureRateThreshold: 50                  # If 50% of the calls fails then closed -> open
+      waitDurationInOpenState: 10000            # Wait for 10 sec before going to half open state.

@@ -16,6 +16,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -42,10 +44,19 @@ public class CustomerServiceImpl implements CustomerService {
                 ()-> new ResourceNotFoundException("Account", "customer id", customer.getCustomerId().toString())
         );
 
+        CardDto cardDto = null;
         ResponseEntity<CardDto> cardDtoResponseEntity = cardsFeignClient.fetchCardDetails(correlationId ,mobileNumber);
-        ResponseEntity<LoanDto> loanDtoResponseEntity = loansFeignClient.fetchLoanDetails(correlationId, mobileNumber);
+        if(Objects.nonNull(cardDtoResponseEntity)) {
+            cardDto = cardDtoResponseEntity.getBody();
+        }
 
-        CustomerDetailsDto customerDetailsDto = CustomerAccountMapper.mapToCustomerDetailsDto(account, customer, loanDtoResponseEntity.getBody(), cardDtoResponseEntity.getBody());
+        LoanDto loanDto = null;
+        ResponseEntity<LoanDto> loanDtoResponseEntity = loansFeignClient.fetchLoanDetails(correlationId, mobileNumber);
+        if (Objects.nonNull(loanDtoResponseEntity)) {
+            loanDto = loanDtoResponseEntity.getBody();
+        }
+
+        CustomerDetailsDto customerDetailsDto = CustomerAccountMapper.mapToCustomerDetailsDto(account, customer, loanDto, cardDto);
         return customerDetailsDto;
     }
 }

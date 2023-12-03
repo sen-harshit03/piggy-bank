@@ -4,6 +4,8 @@ package com.banking.accounts.controller;
 import com.banking.accounts.constants.AccountConstants;
 import com.banking.accounts.dto.*;
 import com.banking.accounts.service.AccountService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,7 +15,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +32,16 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class AccountController {
 
+    private static final Logger log = LoggerFactory.getLogger(AccountController.class);
+
+    private Environment env;
     private AccountService accountService;
     private AccountsContactInfoDto accountsContactInfoDto;
 
-    public AccountController(AccountService accountService, AccountsContactInfoDto accountsContactInfoDto) {
+    public AccountController(AccountService accountService, AccountsContactInfoDto accountsContactInfoDto, Environment env) {
         this.accountService = accountService;
         this.accountsContactInfoDto = accountsContactInfoDto;
+        this.env = env;
     }
 
     @Value("${build.version}")
@@ -118,7 +127,11 @@ public class AccountController {
         }
     }
 
-    // TODO: Add the documentation
+    @Operation(summary = "Contact Info REST API", description = "Rest API to get the Contact info")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "HttpStatus.OK"),
+            @ApiResponse(responseCode = "500", description = "HttpStatus.INTERNAL_SERVER_ERROR")
+    })
     @GetMapping(path = "/contact-info")
     public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
         return ResponseEntity
@@ -126,11 +139,42 @@ public class AccountController {
                 .body(accountsContactInfoDto);
     }
 
+    @Retry(name = "getBuildInfo" , fallbackMethod = "getBuildInfoFallback")
     @GetMapping(path = "/build-info")
     public ResponseEntity<String> getBuildInfo() {
+        log.debug("Fetching build info...");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(buildVersion);
     }
+
+
+    @Operation(summary = "Java Version REST API", description = "Rest API to get the Java Version")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "HttpStatus.OK"),
+            @ApiResponse(responseCode = "500", description = "HttpStatus.INTERNAL_SERVER_ERROR")
+    })
+    @RateLimiter(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
+    @GetMapping(path = "/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(env.getProperty("JAVA_HOME"));
+    }
+
+    public ResponseEntity<String> getJavaVersionFallback(Throwable throwable) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(env.getProperty("Java 17"));
+    }
+
+
+
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
+        log.debug("Invoking getBuildInfoFallback...");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("0.7");
+    }
+
+
 
 }

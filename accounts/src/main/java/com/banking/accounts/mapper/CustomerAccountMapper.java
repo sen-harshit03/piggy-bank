@@ -25,7 +25,7 @@ public class CustomerAccountMapper {
 
     public static CustomerDetailsDto mapToCustomerDetailsDto(Account account, Customer customer, LoanDto loanDto, CardDto cardDto) {
         CustomerAccountDto customerAccountDto = mapToCustomerAccountDto(account, customer);
-        return CustomerDetailsDto.builder()
+            return CustomerDetailsDto.builder()
                 .customerAccountDto(customerAccountDto)
                 .cardDto(cardDto)
                 .loanDto(loanDto)
