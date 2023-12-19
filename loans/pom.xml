@@ -119,7 +119,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>senharshit03/${project.artifactId}:img10</image>
+						<image>senharshit03/${project.artifactId}:img11</image>
 					</to>
 				</configuration>
 			</plugin>
