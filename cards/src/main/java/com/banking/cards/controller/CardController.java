@@ -65,8 +65,10 @@ public class CardController {
             @RequestParam @Pattern(regexp = "^$|[0-9]{10}", message = "Mobile Number must be of 10 digits")
                                                         String mobileNumber) {
 
+        log.debug("Calling Cards service to fetch card details");
         CardDto cardDto = cardService.fetchCardDetails(mobileNumber);
-        log.debug("piggybank-correlation-id : {}", correlationId);
+        log.debug("Successfully fetched the cards details");
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(cardDto);

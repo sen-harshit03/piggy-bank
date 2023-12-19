@@ -64,8 +64,10 @@ public class LoanController {
             @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must of 10 digits")
                                                         String mobileNumber) {
 
+        log.debug("Calling loan service to fetch loan details");
         LoanDto loanDto = loanService.fetchLoanDetails(mobileNumber);
-        log.debug("piggy-bank-correlationId : {}", correlationId);
+        log.debug("Successfully fetched the loans details");
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(loanDto);

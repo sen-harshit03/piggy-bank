@@ -45,8 +45,9 @@ public class CustomerController {
             @RequestHeader("piggybank-correlation-id") String correlationId,
             @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be of 10 digits")
                                                                      String mobileNumber) {
+        log.debug("Calling customer service to fetch customer details");
         CustomerDetailsDto customerDetailsDto = customerService.fetchCustomerDetails(mobileNumber, correlationId);
-        log.debug("piggybank-correlation-id : {}", correlationId);
+        log.debug("Successfully fetched the customer details");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(customerDetailsDto);
